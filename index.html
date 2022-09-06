@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="file" id="uploadfile" accept=".csv" />
+    <button id="uploadconfirm">Upload File</button>
+    <div>
+      <textarea name="" id="uyeler" cols="30" rows="10"></textarea>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <script>
+      const uploadConfirm = document
+        .getElementById("uploadconfirm")
+        .addEventListener("click", () => {
+          Papa.parse(document.getElementById("uploadfile").files[0], {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+              const data = results.data;
+              let uyeIsimleri = [];
+
+              let newData = data.map((data) => {
+                let uyeIsmi = Object.fromEntries(
+                  Object.entries(data).filter(([key]) => key == "Üye")
+                ).Üye;
+
+                uyeIsimleri.push(uyeIsmi);
+              });
+
+              const message =
+                "Destekleriniz için Çok Teşekkürler; " + uyeIsimleri.join(", ");
+
+              document.getElementById("uyeler").innerHTML = message;
+
+              var copyText = document.getElementById("uyeler");
+              /* Select the text field */
+              copyText.select();
+              copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+              /* Copy the text inside the text field */
+              navigator.clipboard.writeText(copyText.value);
+
+              /* Alert the copied text */
+              alert("Kopyalandı: " + copyText.value);
+            },
+          });
+        });
+    </script>
+  </body>
+</html>
